@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Трансформация традиционных ценностей в России | МГИМО</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a237e;
+            --secondary: #ffab00;
+            --accent: #d32f2f;
+            --light: #f5f5f5;
+            --dark: #212121;
+            --mgimo-red: #d52b1e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #f9f9f9;
+            scroll-behavior: smooth;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), #283593);
+            color: white;
+            padding: 60px 0 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mgimo-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--mgimo-red);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 10;
+        }
+        
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: #f9f9f9;
+            transform: skewY(-3deg);
+            z-index: 1;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        h2 {
+            font-size: 2.2rem;
+            margin: 60px 0 30px;
+            color: var(--primary);
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: var(--secondary);
+        }
+        
+        h3 {
+            font-size: 1.6rem;
+            margin: 30px 0 15px;
+            color: var(--primary);
+        }
+        
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .lead {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--secondary);
+            color: var(--dark);
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .btn:hover {
+            background: #ffc107;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .btn-accent {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .btn-accent:hover {
+            background: #e53935;
+        }
+        
+        .section {
+            padding: 80px 0;
+            position: relative;
+        }
+        
+        .section-light {
+            background: white;
+        }
+        
+        .section-dark {
+            background: #f0f0f0;
+        }
+        
+        .model-container {
+            width: 100%;
+            height: 600px;
+            margin: 40px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            touch-action: none;
+        }
+        
+        .model-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 8px;
+            max-width: 300px;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.5s ease;
+            backdrop-filter: blur(5px);
+        }
+        
+        .model-info h4 {
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px);
+        }
+        
+        .controls p {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .axis-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        
+        .axis-card {
+            flex: 1;
+            min-width: 250px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .axis-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .axis-card h3 {
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+        
+        .axis-card .icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .insights {
+            background: var(--primary);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            margin: 60px 0;
+            transition: all 0.5s ease;
+        }
+        
+        .insights:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(26, 35, 126, 0.2);
+        }
+        
+        .insights h2 {
+            color: white;
+        }
+        
+        .insights h2::after {
+            background: var(--secondary);
+        }
+        
+        .insights ul {
+            list-style-type: none;
+        }
+        
+        .insights li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 30px;
+            line-height: 1.7;
+        }
+        
+        .insights li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 40px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .data-table:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .data-table th {
+            background: var(--primary);
+            color: white;
+            font-weight: 500;
+        }
+        
+        .data-table tr:nth-child(even) {
+            background: #f5f5f5;
+        }
+        
+        .data-table tr:hover {
+            background: #e0e0e0;
+        }
+        
+        .conclusion {
+            background: linear-gradient(135deg, #ffab00, #ff8f00);
+            color: var(--dark);
+            padding: 40px;
+            border-radius: 10px;
+            margin: 60px 0;
+            transition: all 0.5s ease;
+        }
+        
+        .conclusion:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 171, 0, 0.2);
+        }
+        
+        .conclusion h2 {
+            color: var(--dark);
+        }
+        
+        .methodology {
+            background: #f5f5f5;
+            padding: 40px;
+            border-radius: 10px;
+            margin: 40px 0;
+            border-left: 5px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .methodology:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .participation {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 60px 0;
+            transition: all 0.5s ease;
+        }
+        
+        .participation:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(211, 47, 47, 0.2);
+        }
+        
+        .participation h2 {
+            color: white;
+        }
+        
+        .participation h2::after {
+            background: white;
+        }
+        
+        .theoretical {
+            background: #e8f5e9;
+            padding: 40px;
+            border-radius: 10px;
+            margin: 40px 0;
+            border-left: 5px solid #388e3c;
+            transition: all 0.3s ease;
+        }
+        
+        .theoretical:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        footer p {
+            margin-bottom: 0;
+        }
+        
+        /* Мобильные стили */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+                margin: 40px 0 20px;
+            }
+            
+            .lead {
+                font-size: 1.1rem;
+            }
+            
+            .section {
+                padding: 50px 0;
+            }
+            
+            .model-container {
+                height: 400px;
+                margin: 20px 0;
+            }
+            
+            .axis-info {
+                flex-direction: column;
+            }
+            
+            /* Новые стили для мобильной информации */
+            .model-info-container {
+                position: static;
+                margin-top: 20px;
+                width: 100%;
+                max-width: 100%;
+                background: rgba(255, 255, 255, 0.95);
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+            
+            .model-info {
+                position: static;
+                max-width: 100%;
+                margin-top: 20px;
+                background: transparent;
+                box-shadow: none;
+                padding: 0;
+            }
+            
+            .controls {
+                top: 10px;
+                right: 10px;
+                padding: 8px;
+                font-size: 0.8rem;
+            }
+            
+            .controls p {
+                margin-bottom: 3px;
+                font-size: 0.8rem;
+            }
+            
+            /* Улучшения для мобильной 3D модели */
+            #valueModel canvas {
+                width: 100% !important;
+                height: 100% !important;
+            }
+        }
+        
+        /* Еще более компактные устройства */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .model-container {
+                height: 350px;
+            }
+            
+            .controls {
+                display: none;
+            }
+        }
+        
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+        
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+        
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+        
+        /* Плавные переходы для кнопок */
+        .btn, .axis-card, .insights, .conclusion, .participation {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="mgimo-badge">Исследование МГИМО</div>
+        <div class="container">
+            <h1 class="fade-in">Трансформация традиционных ценностей в России</h1>
+            <p class="lead fade-in delay-1">Интерактивное исследование динамики ценностных ориентаций российского общества на основе социологических данных и теории Рональда Инглхарта</p>
+            <a href="#model" class="btn fade-in delay-2">Исследовать модель</a>
+        </div>
+    </header>
+    
+    <section class="section section-light">
+        <div class="container">
+            <h2 class="fade-in">О проекте</h2>
+            <p class="fade-in delay-1">Данный проект представляет собой исследование трансформации традиционных ценностей в российском обществе, проведенное студентами факультета управления и политики МГИМО. В условиях глобализации и социокультурных изменений традиционные ценности играют важную роль в формировании идентичности общества.</p>
+            
+            <div class="axis-info">
+                <div class="axis-card fade-in delay-1">
+                    <div class="icon">↔️</div>
+                    <h3>Ось 1: Традиционные vs Секулярно-рациональные ценности</h3>
+                    <p>Отражает переход от религиозных и традиционных ценностей к светским и рациональным. Среднее значение по России: 4.98 (из 7 возможных).</p>
+                </div>
+                <div class="axis-card fade-in delay-2">
+                    <div class="icon">↕️</div>
+                    <h3>Ось 2: Выживание vs Самовыражение</h3>
+                    <p>Показывает переход от ценностей выживания к ценностям самовыражения. Среднее значение по России: 4.63 (из 7 возможных).</p>
+                </div>
+                <div class="axis-card fade-in delay-3">
+                    <div class="icon">↻</div>
+                    <h3>Ось 3: Коллективизм vs Индивидуализм</h3>
+                    <p>Отражает ориентацию на коллективные ценности или индивидуальные достижения. Среднее значение по России: 4.72 (из 7 возможных).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="model" class="section section-dark">
+        <div class="container">
+            <h2 class="fade-in">3D Модель ценностей России</h2>
+            <p class="fade-in delay-1">Интерактивная модель позволяет исследовать ценностные ориентации по федеральным округам России. Поворачивайте модель, нажимайте на сегменты для получения дополнительной информации.</p>
+            
+            <div class="model-container" id="valueModel">
+                <div class="controls fade-in">
+                    <p>🖱️ Вращайте - ЛКМ</p>
+                    <p>🔍 Приближайте - Колесо</p>
+                    <p>🚀 Перемещайте - ПКМ</p>
+                </div>
+                <div class="model-info" id="modelInfo">
+                    <h4>Выберите федеральный округ</h4>
+                    <p>Кликните на сегмент модели для получения информации о ценностных ориентациях в выбранном округе.</p>
+                </div>
+            </div>
+            
+            <!-- Новый контейнер для информации на мобильных -->
+            <div class="model-info-container" id="mobileModelInfo" style="display: none;">
+                <div class="model-info"></div>
+            </div>
+            
+            <div class="data-table-container fade-in delay-2">
+                <h3>Данные по федеральным округам</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Федеральный округ</th>
+                            <th>Кол-во опрошенных</th>
+                            <th>Ось 1 (Трад/Сек)</th>
+                            <th>Ось 2 (Выж/Сам)</th>
+                            <th>Ось 3 (Кол/Индив)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Центральный ФО</td>
+                            <td>46</td>
+                            <td>4.77</td>
+                            <td>4.29</td>
+                            <td>4.44</td>
+                        </tr>
+                        <tr>
+                            <td>Северо-Западный ФО</td>
+                            <td>12</td>
+                            <td>4.43</td>
+                            <td>4.18</td>
+                            <td>4.33</td>
+                        </tr>
+                        <tr>
+                            <td>Южный ФО</td>
+                            <td>6</td>
+                            <td>5.17</td>
+                            <td>4.27</td>
+                            <td>5.20</td>
+                        </tr>
+                        <tr>
+                            <td>Приволжский ФО</td>
+                            <td>11</td>
+                            <td>5.09</td>
+                            <td>4.51</td>
+                            <td>5.16</td>
+                        </tr>
+                        <tr>
+                            <td>Уральский ФО</td>
+                            <td>30</td>
+                            <td>5.02</td>
+                            <td>4.55</td>
+                            <td>4.59</td>
+                        </tr>
+                        <tr>
+                            <td>Сибирский ФО</td>
+                            <td>6</td>
+                            <td>5.00</td>
+                            <td>4.57</td>
+                            <td>5.10</td>
+                        </tr>
+                        <tr>
+                            <td>Дальневосточный ФО</td>
+                            <td>6</td>
+                            <td>4.10</td>
+                            <td>4.77</td>
+                            <td>4.57</td>
+                        </tr>
+                        <tr>
+                            <td>Северо-Кавказский ФО</td>
+                            <td>8</td>
+                            <td>5.25</td>
+                            <td>4.88</td>
+                            <td>4.40</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    
+    <section class="section section-light">
+        <div class="container">
+            <div class="methodology fade-in">
+                <h3>Методология исследования</h3>
+                <p>В исследовании применяется ценностный подход, реализуемый в рамках парадигмы социологического институционализма, позволяющий осуществить многоуровневый анализ традиционных ценностей в российском социуме. Данная методологическая перспектива рассматривает ценности как активные компоненты институциональной системы общества.</p>
+                <p>Использованы следующие методы:</p>
+                <ul>
+                    <li>Социологический опрос (анкетирование) для сбора первичных данных (всего опрошено 125 респондентов)</li>
+                    <li>Метод моделирования для визуализации ценностных ориентаций</li>
+                    <li>Нормативный анализ для изучения официальных документов и ценностей</li>
+                </ul>
+            </div>
+            
+            <div class="theoretical fade-in delay-1">
+                <h3>Теоретические основы</h3>
+                <p>Исследование опирается на теории Инглхарта-Вельцеля и Хофстеде, которые имеют фундаментальное значение для анализа традиционных ценностей. Концепция постматериалистического сдвига раскрывает механизмы трансформации ценностных ориентаций, тогда как теория культурных измерений объясняет устойчивость традиционных паттернов.</p>
+                <p>Традиционные ценности рассматриваются как сложные социокультурные феномены, находящиеся на пересечении объективных социальных структур и субъективных представлений.</p>
+            </div>
+            
+            <div class="insights fade-in delay-2">
+                <h2>Аналитические инсайты</h2>
+                <ul>
+                    <li><strong>Финансовая значимость и удовлетворенность.</strong> 68% респондентов отметили важность денег в жизни, при этом 54% выразили неудовлетворенность своим финансовым положением. Это может свидетельствовать о высоких социальных ожиданиях в условиях экономической трансформации.</li>
+                    <li><strong>Роль религии в ценностной системе.</strong> Средняя оценка значимости религии составила 4.4 балла из 7, тогда как ее роль в воспитании детей оценивается в 3.7 балла. Религия сохраняет культурное значение, но не является определяющим фактором воспитания.</li>
+                    <li><strong>Коллективные и индивидуальные ориентации.</strong> 71% опрошенных поддерживают идеи коллективной работы, однако приоритет стабильности (5.4 балла) и значимость денег (6.2 балла) указывают на прагматические индивидуальные стратегии.</li>
+                    <li><strong>Государственные и личные приоритеты.</strong> Патриотизм и семья получили высокие оценки (6.2 и 5.8 баллов соответственно), тогда как осведомленность о государственных документах, закрепляющих ценности, остается на уровне 3.2 балла.</li>
+                </ul>
+            </div>
+            
+            <div class="conclusion fade-in delay-3">
+                <h2>Основные выводы</h2>
+                <p>Исследование ценностных ориентаций в российских регионах выявило несколько ключевых тенденций:</p>
+                <p><strong>1. Региональные особенности ценностных систем:</strong></p>
+                <ul>
+                    <li>Наибольшая приверженность традиционным ценностям наблюдается в Северо-Кавказском ФО (5.25 балла)</li>
+                    <li>Наименьшие значения традиционности - в Дальневосточном ФО (4.10 балла)</li>
+                    <li>Коллективистские ориентации наиболее выражены в Южном ФО (5.20 балла)</li>
+                </ul>
+                
+                <p><strong>2. Динамика ценностных трансформаций:</strong></p>
+                <ul>
+                    <li>Средние значения по осям: традиционность (4.98), выживание (4.63), коллективизм (4.72)</li>
+                    <li>Сочетание традиционных и современных ценностей в большинстве регионов</li>
+                    <li>Умеренный уровень коллективизма при значимости индивидуальных стратегий</li>
+                </ul>
+                
+                <p><strong>3. Перспективы дальнейшего исследования:</strong></p>
+                <ul>
+                    <li>Мониторинг динамики ценностных ориентаций в условиях социально-экономических изменений</li>
+                    <li>Изучение взаимосвязи ценностных систем и экономического поведения</li>
+                    <li>Анализ эффективности механизмов трансляции традиционных ценностей</li>
+                </ul>
+            </div>
+            
+            <div class="participation fade-in">
+                <h2>Примите участие в исследовании</h2>
+                <p>Мы продолжаем изучать трансформацию ценностей в российском обществе. Ваше мнение важно для нас!</p>
+                <p>Пройдите короткий опрос и помогите сделать исследование более точным и репрезентативным.</p>
+                <a href="https://docs.google.com/forms/d/1i4OpAI_t-n69QpJBeSySA8m595q_Q6LO0bN2DaZUXXQ/edit#responses" class="btn btn-accent" target="_blank">Пройти опрос</a>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>Курсовой проект студентов факультета управления и политики МГИМО</p>
+            <p>© 2025 Исследование трансформации традиционных ценностей в России</p>
+        </div>
+    </footer>
+
+    <script>
+        // Инициализация Three.js сцены
+        let scene, camera, renderer, model, controls;
+        const districts = [
+            { name: "Центральный ФО", color: 0x1a237e, x: 4.77, y: 4.29, z: 4.44, respondents: 46, values: ["Семья: 6.2", "Религия: 4.6", "Коллективизм: 4.4"] },
+            { name: "Северо-Западный ФО", color: 0x283593, x: 4.43, y: 4.18, z: 4.33, respondents: 12, values: ["Семья: 6.0", "Религия: 4.2", "Коллективизм: 4.0"] },
+            { name: "Южный ФО", color: 0x3949ab, x: 5.17, y: 4.27, z: 5.20, respondents: 6, values: ["Семья: 6.5", "Религия: 4.8", "Коллективизм: 5.1"] },
+            { name: "Приволжский ФО", color: 0x5c6bc0, x: 5.09, y: 4.51, z: 5.16, respondents: 11, values: ["Семья: 6.3", "Религия: 4.9", "Коллективизм: 5.0"] },
+            { name: "Уральский ФО", color: 0x7986cb, x: 5.02, y: 4.55, z: 4.59, respondents: 30, values: ["Семья: 6.1", "Религия: 4.7", "Коллективизм: 4.5"] },
+            { name: "Сибирский ФО", color: 0x9fa8da, x: 5.00, y: 4.57, z: 5.10, respondents: 6, values: ["Семья: 6.0", "Религия: 4.8", "Коллективизм: 5.0"] },
+            { name: "Дальневосточный ФО", color: 0xc5cae9, x: 4.10, y: 4.77, z: 4.57, respondents: 6, values: ["Семья: 5.2", "Религия: 4.9", "Коллективизм: 4.5"] },
+            { name: "Северо-Кавказский ФО", color: 0xd32f2f, x: 5.25, y: 4.88, z: 4.40, respondents: 8, values: ["Семья: 6.8", "Религия: 5.2", "Коллективизм: 4.2"] }
+        ];
+
+        function init() {
+            // Создание сцены
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf5f5f5);
+            
+            // Создание камеры с учетом мобильных устройств
+            const container = document.getElementById('valueModel');
+            camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+            
+            // Настройка позиции камеры в зависимости от устройства
+            if (window.innerWidth <= 768) {
+                camera.position.z = 20;
+                camera.position.y = 8;
+            } else {
+                camera.position.z = 15;
+                camera.position.y = 5;
+            }
+            
+            // Создание рендерера
+            renderer = new THREE.WebGLRenderer({ 
+                antialias: true,
+                powerPreference: "high-performance"
+            });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            container.appendChild(renderer.domElement);
+            
+            // Добавление освещения
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 10, 7);
+            scene.add(directionalLight);
+            
+            // Создание осей
+            createAxes();
+            
+            // Создание модели с увеличенными размерами для мобильных
+            createModel();
+            
+            // Добавление контролов для вращения с настройками для мобильных
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            
+            // Настройки для мобильных устройств
+            if (window.innerWidth <= 768) {
+                controls.enableZoom = true;
+                controls.touchDampingFactor = 0.1;
+                controls.screenSpacePanning = true;
+                
+                // Скрываем стандартный блок информации на мобильных
+                document.getElementById('modelInfo').style.display = 'none';
+                // Показываем новый блок под моделью
+                document.getElementById('mobileModelInfo').style.display = 'block';
+            }
+            
+            // Обработка изменения размера окна
+            window.addEventListener('resize', onWindowResize);
+            
+            // Обработчик для тач-устройств
+            setupTouchControls();
+            
+            // Запуск анимации
+            animate();
+        }
+        
+        function setupTouchControls() {
+            const container = document.getElementById('valueModel');
+            let isDragging = false;
+            let previousTouch = null;
+            
+            container.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    isDragging = true;
+                    previousTouch = {
+                        x: e.touches[0].clientX,
+                        y: e.touches[0].clientY
+                    };
+                }
+            }, { passive: false });
+            
+            container.addEventListener('touchmove', (e) => {
+                if (isDragging && e.touches.length === 1 && previousTouch) {
+                    const touch = e.touches[0];
+                    const deltaX = touch.clientX - previousTouch.x;
+                    const deltaY = touch.clientY - previousTouch.y;
+                    
+                    // Вращение модели
+                    controls.rotateLeft(-2 * Math.PI * deltaX / container.offsetWidth);
+                    controls.rotateUp(-2 * Math.PI * deltaY / container.offsetHeight);
+                    
+                    previousTouch = {
+                        x: touch.clientX,
+                        y: touch.clientY
+                    };
+                    
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            
+            container.addEventListener('touchend', () => {
+                isDragging = false;
+                previousTouch = null;
+            }, { passive: false });
+            
+            // Обработка клика/тапа
+            container.addEventListener('touchend', handleTap, { passive: false });
+            renderer.domElement.addEventListener('click', handleTap, false);
+        }
+        
+        function handleTap(e) {
+            // Для тач-устройств
+            if (e.touches && e.touches.length > 0) return;
+            
+            const mouse = new THREE.Vector2();
+            const raycaster = new THREE.Raycaster();
+            const rect = renderer.domElement.getBoundingClientRect();
+            
+            // Определение позиции тапа/клика
+            if (e.changedTouches) {
+                mouse.x = ((e.changedTouches[0].clientX - rect.left) / rect.width) * 2 - 1;
+                mouse.y = -((e.changedTouches[0].clientY - rect.top) / rect.height) * 2 + 1;
+            } else {
+                mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+                mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+            }
+            
+            // Проверка пересечений
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(model.children);
+            
+            if (intersects.length > 0) {
+                const selected = intersects[0].object;
+                if (selected.userData) {
+                    updateInfoPanel(selected.userData);
+                    
+                    // Анимация выделения
+                    selected.material.emissive.setHex(0x888888);
+                    setTimeout(() => {
+                        selected.material.emissive.setHex(0x072534);
+                    }, 500);
+                }
+            }
+        }
+        
+        function updateInfoPanel(data) {
+            let infoPanel;
+            if (window.innerWidth <= 768) {
+                infoPanel = document.querySelector('#mobileModelInfo .model-info');
+            } else {
+                infoPanel = document.getElementById('modelInfo');
+            }
+            
+            infoPanel.innerHTML = `
+                <h4>${data.name}</h4>
+                <p><strong>Количество опрошенных:</strong> ${data.respondents}</p>
+                <p><strong>Традиционные vs Секулярно-рациональные:</strong> ${data.x}</p>
+                <p><strong>Выживание vs Самовыражение:</strong> ${data.y}</p>
+                <p><strong>Коллективизм vs Индивидуализм:</strong> ${data.z}</p>
+                <p><strong>Ключевые ценности:</strong></p>
+                <ul style="margin-left: 20px;">
+                    ${data.values.map(value => `<li>${value}</li>`).join('')}
+                </ul>
+            `;
+        }
+        
+        function createAxes() {
+            // Ось X (Традиционные vs Секулярно-рациональные ценности)
+            const xAxis = new THREE.ArrowHelper(
+                new THREE.Vector3(1, 0, 0),
+                new THREE.Vector3(-6, -5, -5),
+                6,
+                0x1a237e,
+                0.3,
+                0.2
+            );
+            scene.add(xAxis);
+            
+            // Ось Y (Выживание vs Самовыражение)
+            const yAxis = new THREE.ArrowHelper(
+                new THREE.Vector3(0, 1, 0),
+                new THREE.Vector3(-6, -5, -5),
+                6,
+                0xd32f2f,
+                0.3,
+                0.2
+            );
+            scene.add(yAxis);
+            
+            // Ось Z (Коллективизм vs Индивидуализм)
+            const zAxis = new THREE.ArrowHelper(
+                new THREE.Vector3(0, 0, 1),
+                new THREE.Vector3(-6, -5, -5),
+                6,
+                0x388e3c,
+                0.3,
+                0.2
+            );
+            scene.add(zAxis);
+            
+            // Подписи осей
+            const xLabel = createAxisLabel("Трад ↔ Сек", new THREE.Color(0x1a237e));
+            xLabel.position.set(0, -5, -5);
+            scene.add(xLabel);
+            
+            const yLabel = createAxisLabel("Выж ↔ Сам", new THREE.Color(0xd32f2f));
+            yLabel.position.set(-6, 1, -5);
+            scene.add(yLabel);
+            
+            const zLabel = createAxisLabel("Кол ↔ Индив", new THREE.Color(0x388e3c));
+            zLabel.position.set(-6, -5, 1);
+            scene.add(zLabel);
+        }
+        
+        function createAxisLabel(text, color) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 128;
+            const context = canvas.getContext('2d');
+            context.fillStyle = '#ffffff';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.font = 'Bold 24px Arial';
+            context.fillStyle = `rgb(${color.r * 255}, ${color.g * 255}, ${color.b * 255})`;
+            context.textAlign = 'center';
+            context.fillText(text, canvas.width / 2, canvas.height / 2);
+            
+            const texture = new THREE.CanvasTexture(canvas);
+            const material = new THREE.SpriteMaterial({ 
+                map: texture,
+                transparent: true,
+                opacity: 0.9
+            });
+            const sprite = new THREE.Sprite(material);
+            sprite.scale.set(2, 1, 1);
+            return sprite;
+        }
+        
+        function createModel() {
+            model = new THREE.Group();
+            
+            // Создание центральной точки
+            const centerGeometry = new THREE.SphereGeometry(0.2, 32, 32);
+            const centerMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 });
+            const center = new THREE.Mesh(centerGeometry, centerMaterial);
+            model.add(center);
+            
+            // Создание сегментов для каждого федерального округа
+            districts.forEach((district) => {
+                // Увеличиваем размер сфер для мобильных устройств
+                const sphereSize = window.innerWidth <= 768 ? 0.7 : 0.5;
+                const geometry = new THREE.SphereGeometry(sphereSize, 32, 32);
+                const material = new THREE.MeshPhongMaterial({ 
+                    color: district.color,
+                    emissive: 0x072534,
+                    side: THREE.DoubleSide,
+                    flatShading: true
+                });
+                
+                const sphere = new THREE.Mesh(geometry, material);
+                
+                // Позиционирование на основе данных
+                sphere.position.set(
+                    district.x - 5,
+                    district.y - 5,
+                    district.z - 5
+                );
+                
+                // Добавление интерактивности
+                sphere.userData = district;
+                
+                // Добавление соединения с центром
+                const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+                    new THREE.Vector3(0, 0, 0),
+                    new THREE.Vector3(district.x - 5, district.y - 5, district.z - 5)
+                ]);
+                const lineMaterial = new THREE.LineBasicMaterial({ 
+                    color: 0xaaaaaa,
+                    linewidth: 2
+                });
+                const line = new THREE.Line(lineGeometry, lineMaterial);
+                
+                model.add(sphere);
+                model.add(line);
+            });
+            
+            scene.add(model);
+        }
+        
+        function onWindowResize() {
+            const container = document.getElementById('valueModel');
+            camera.aspect = container.offsetWidth / container.offsetHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            
+            // Обновляем позицию камеры для мобильных устройств
+            if (window.innerWidth <= 768) {
+                camera.position.z = 20;
+                camera.position.y = 8;
+            } else {
+                camera.position.z = 15;
+                camera.position.y = 5;
+            }
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        
+        // Запуск приложения после полной загрузки страницы
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
